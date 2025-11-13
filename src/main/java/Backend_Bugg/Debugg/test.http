@@ -1,0 +1,25 @@
+POST http://localhost:8080/api/code/run
+Content-Type: text/plain
+
+
+
+import javax.swing.*;
+import java.awt.Color;
+public class UserProgram {
+JFrame frame;
+JPanel panel;
+UserProgram(){
+frame=new JFrame("Frame");
+frame.setSize(600,600);
+frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+
+panel=new JPanel();
+panel.setBackground(Color.BLACK);
+frame.add(panel);
+frame.setVisible(true);
+
+}
+     public static void main(String[] args) {
+        new UserProgram();
+     }
+ }

@@ -4,7 +4,7 @@ FROM eclipse-temurin:17-jdk-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy Maven/Gradle build files
+# Copy Maven/Gradle  build files
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
 # Copy source code

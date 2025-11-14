@@ -5,35 +5,47 @@ import org.springframework.stereotype.Service;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 public class services {
 
+    /**
+     * Compile and run Java code with optional Scanner input.
+     *
+     * @param code  The Java source code to compile and run
+     * @param input Input to provide to Scanner (newline separated)
+     * @return attributes object with output or error
+     */
     public attributes compileAndRunWithInput(String code, String input) {
         try {
-            // Step 1: Save user code to a file
+            // Step 1: Save user code to a temporary file
             String fileName = "UserProgram.java";
             Files.write(Paths.get(fileName), code.getBytes());
 
             // Step 2: Compile code
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            ByteArrayOutputStream errStream = new ByteArrayOutputStream();
-            int result = compiler.run(null, null, errStream, fileName);
+            if (compiler == null) {
+                return new attributes("JavaCompiler not found. Make sure JDK is installed.", "ERROR");
+            }
 
-            if (result != 0) {
-                return new attributes("Compilation Error:\n" + errStream, "ERROR");
+            ByteArrayOutputStream errStream = new ByteArrayOutputStream();
+            int compileResult = compiler.run(null, null, errStream, fileName);
+
+            if (compileResult != 0) {
+                return new attributes("Compilation Error:\n" + errStream.toString(), "ERROR");
             }
 
             // Step 3: Run compiled code with input
             ProcessBuilder pb = new ProcessBuilder("java", "UserProgram");
-            pb.redirectErrorStream(true); // merge stdout & stderr
+            pb.redirectErrorStream(true); // Merge stdout & stderr
             Process process = pb.start();
 
-            // Send Scanner input to process
+            // Provide Scanner input to the running process
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
                 writer.write(input);
-                if (!input.endsWith("\n")) writer.newLine(); // make sure last line ends with newline
+                if (!input.endsWith("\n")) writer.newLine(); // Ensure last line ends with newline
                 writer.flush();
             }
 
@@ -41,9 +53,11 @@ public class services {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) output.append(line).append("\n");
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
 
-            process.waitFor(); // wait until process finishes
+            process.waitFor(); // Wait for process to finish
 
             return new attributes(output.toString(), "SUCCESS");
 

@@ -1,4 +1,4 @@
-### Run Java code with Scanner input
+
 POST http://localhost:8080/api/code/run
 Content-Type: application/json
 

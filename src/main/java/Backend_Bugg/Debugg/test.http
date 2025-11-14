@@ -1,25 +1,8 @@
+### Run Java code with Scanner input
 POST http://localhost:8080/api/code/run
-Content-Type: text/plain
+Content-Type: application/json
 
-
-
-import javax.swing.*;
-import java.awt.Color;
-public class UserProgram {
-JFrame frame;
-JPanel panel;
-UserProgram(){
-frame=new JFrame("Frame");
-frame.setSize(600,600);
-frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
-
-panel=new JPanel();
-panel.setBackground(Color.BLACK);
-frame.add(panel);
-frame.setVisible(true);
-
+{
+  "code": "import java.util.Scanner;\n\npublic class UserProgram {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"Enter your age: \");\n        int age = sc.nextInt();\n        System.out.print(\"Enter your name: \");\n        String name = sc.next();\n        System.out.println(\"Hello, \" + name + \"! You are \" + age + \" years old.\");\n        sc.close();\n    }\n}",
+  "input": "25\nSulabh\n"
 }
-     public static void main(String[] args) {
-        new UserProgram();
-     }
- }

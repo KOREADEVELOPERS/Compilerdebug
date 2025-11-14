@@ -1,4 +1,5 @@
 package Backend_Bugg.Debugg;
+
 import org.springframework.stereotype.Service;
 
 import javax.tools.JavaCompiler;
@@ -9,7 +10,7 @@ import java.nio.file.*;
 @Service
 public class services {
 
-    public attributes compileAndRun(String code) {
+    public attributes compileAndRunWithInput(String code, String input) {
         try {
             // Step 1: Save user code to a file
             String fileName = "UserProgram.java";
@@ -24,16 +25,25 @@ public class services {
                 return new attributes("Compilation Error:\n" + errStream, "ERROR");
             }
 
-            // Step 3: Run compiled code
-            Process process = Runtime.getRuntime().exec("java UserProgram");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            // Step 3: Run compiled code with input
+            ProcessBuilder pb = new ProcessBuilder("java", "UserProgram");
+            pb.redirectErrorStream(true); // merge stdout & stderr
+            Process process = pb.start();
 
+            // Send Scanner input to process
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+                writer.write(input);
+                if (!input.endsWith("\n")) writer.newLine(); // make sure last line ends with newline
+                writer.flush();
+            }
+
+            // Read process output
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
-
             while ((line = reader.readLine()) != null) output.append(line).append("\n");
-            while ((line = errReader.readLine()) != null) output.append(line).append("\n");
+
+            process.waitFor(); // wait until process finishes
 
             return new attributes(output.toString(), "SUCCESS");
 

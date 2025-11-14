@@ -9,5 +9,3 @@ public class attributes {
     private String output;
     private String status; // SUCCESS / ERROR
 }
-
-

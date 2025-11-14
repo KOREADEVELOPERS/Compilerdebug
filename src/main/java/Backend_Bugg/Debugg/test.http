@@ -1,7 +1,16 @@
 POST http://localhost:8080/api/code/run
-Content-Type: application/json
+Content-Type: text/plain
 
-{
-  "code": "import java.util.Scanner;\n\npublic class UserProgram {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print(\"Enter your age: \");\n        int age = sc.nextInt();\n        System.out.print(\"Enter your name: \");\n        String name = sc.next();\n        System.out.println(\"Hello, \" + name + \"! You are \" + age + \" years old.\");\n        sc.close();\n    }\n}",
-  "input": "25\nSulabh\n"
+import java.util.Scanner;
+
+public class UserProgram {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter your age: ");
+        int age = sc.nextInt();
+        System.out.println("You entered: " + age);
+    }
 }
+
+
+

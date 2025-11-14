@@ -14,8 +14,8 @@ public class services {
     /**
      * Compile and run Java code with optional Scanner input.
      *
-     * @param code  The Java source code to compile and run
-     * @param input Input to provide to Scanner (newline separated)
+     * @param code  Java source code
+     * @param input Scanner input (newline separated)
      * @return attributes object with output or error
      */
     public attributes compileAndRunWithInput(String code, String input) {
@@ -42,14 +42,14 @@ public class services {
             pb.redirectErrorStream(true); // Merge stdout & stderr
             Process process = pb.start();
 
-            // Provide Scanner input to the running process
+            // Send Scanner input
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
                 writer.write(input);
-                if (!input.endsWith("\n")) writer.newLine(); // Ensure last line ends with newline
+                if (!input.endsWith("\n")) writer.newLine();
                 writer.flush();
             }
 
-            // Read process output
+            // Read output
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
@@ -57,8 +57,7 @@ public class services {
                 output.append(line).append("\n");
             }
 
-            process.waitFor(); // Wait for process to finish
-
+            process.waitFor(); // wait until program finishes
             return new attributes(output.toString(), "SUCCESS");
 
         } catch (Exception e) {
